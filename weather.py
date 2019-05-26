@@ -1,10 +1,11 @@
 from urllib.request import urlopen
-from urllib.parse import urlparse
+#import urllib.request
 
 import http.client
-import urllib.request
 
 import urllib
+from xml.etree import ElementTree
+
 # 일반 인증키
 key = 'ServiceKey=' + 'sqzrjxFFd5WX3hf5KetFKPC9StDxln3sbsk3V2CzIg2yMKCYAQmrTayFhk78aYuXs2ToJNRSNP%2FweK%2FroyJ%2Fng%3D%3D'
 # End Point : Request는 이쪽으로
@@ -22,8 +23,15 @@ url = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastSpac
       + nx + '&' \
       + ny
 
-request = urllib.request.Request(url)
-response = urllib.request.urlopen(request)
+req = urllib.request.Request(url)
+response = urlopen(url)
+data = response.read()
 
 print(url)
+print(data)
 
+
+filename = "LocalWeather.xml"
+f = open(filename,"w")
+#f.write(data)
+f.close()
