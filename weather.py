@@ -45,7 +45,8 @@ items = items.find('items')
 #     if (strTitle.text.find(keyword) >= 0):  # keyword 검색
 
 for element in items.findall("item"):
-     print(element.find("fcstTime"))
-     print(element.find("fcstValue"))
+     print('예보시간 : ' + element.find("fcstTime").text)
+     print('예보값 : '+ element.find("fcstValue").text)
+     print(' ')
 
 targetXML.close()
