@@ -44,7 +44,7 @@ items = items.find('items')
 #      strTitle = item.find("title")  # ’title’ 엘리먼트 추출
 #     if (strTitle.text.find(keyword) >= 0):  # keyword 검색
 
-for element in root.findall("item"):
+for element in items.findall("item"):
      print(element.find("fcstTime"))
      print(element.find("fcstValue"))
 
