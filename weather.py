@@ -11,7 +11,7 @@ key = 'ServiceKey=' + 'sqzrjxFFd5WX3hf5KetFKPC9StDxln3sbsk3V2CzIg2yMKCYAQmrTayFh
 # End Point : Request는 이쪽으로
 EndPoint = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2'
 base_date = 'base_date=' + '20190526'
-base_time = 'base_time=' + '1800'
+base_time = 'base_time=' + '2000'
 nx = 'nx=' + '55'
 ny = 'ny=' + '127'
 
@@ -28,10 +28,24 @@ response = urlopen(url)
 data = response.read()
 
 print(url)
-print(data)
-
-
 filename = "LocalWeather.xml"
-f = open(filename,"w")
-#f.write(data)
+
+f = open(filename,"wb")
+f.write(data)
 f.close()
+
+targetXML = open(filename)
+tree = ElementTree.parse(targetXML)
+root = tree.getroot()
+
+items = root.find('body')
+items = items.find('items')
+#for item in bookElements:
+#      strTitle = item.find("title")  # ’title’ 엘리먼트 추출
+#     if (strTitle.text.find(keyword) >= 0):  # keyword 검색
+
+for element in root.findall("item"):
+     print(element.find("fcstTime"))
+     print(element.find("fcstValue"))
+
+targetXML.close()
