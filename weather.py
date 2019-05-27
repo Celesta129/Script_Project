@@ -30,7 +30,6 @@ class WeatherForecast:
         self.ny = 'ny=' + str(ny)
         self.base_date = 'base_date='
         self.base_time = 'base_time='
-        self.tree = None
         pass
 
     def call_weather(self):
@@ -59,7 +58,7 @@ class WeatherForecast:
         f.close()
 
         targetXML = open(WeatherForecast.filename)
-        self.tree = ElementTree.parse(targetXML)
+        tree = ElementTree.parse(targetXML)
         root = tree.getroot()
         items = root.find('body')
         items = items.find('items')
