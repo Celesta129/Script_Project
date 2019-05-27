@@ -37,11 +37,29 @@ class WeatherForecast:
         # timedata 만들어야됨
         ##
         now = datetime.now()
+
+        if int(now.day) < 10:
+            day = '0' + str(now.day)
+        else:
+            day = str(now.day)
+
         if int(now.month) < 10:
             month = '0' + str(now.month)
-        hour = str(now.hour)
-        self.base_date += str(now.year) + month + str(now.day)
-        self.base_time += hour + str(now.minute)
+        else:
+            month = str(now.month)
+
+        if int(now.hour) < 10:
+            hour = '0' + str(now.hour)
+        else:
+            hour = str(now.hour)
+
+        if int(now.minute) < 10:
+            minute = '0' + str(now.hour)
+        else:
+            minute = str(now.hour)
+
+        self.base_date += str(now.year) + month + day
+        self.base_time += hour + minute
 
         url = self.End_Point \
               + self.key + '&' \
@@ -82,3 +100,5 @@ class WeatherForecast:
             print('')
         targetXML.close()
         return infolist
+
+WeatherForecast(55,127).call_weather()
