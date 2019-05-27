@@ -54,9 +54,9 @@ class WeatherForecast:
             hour = str(now.hour)
 
         if int(now.minute) < 10:
-            minute = '0' + str(now.hour)
+            minute = '0' + str(now.minute)
         else:
-            minute = str(now.hour)
+            minute = str(now.minute)
 
         self.base_date += str(now.year) + month + day
         self.base_time += hour + minute
