@@ -68,7 +68,7 @@ class WeatherForecast:
             minute = str(now.minute)
 
         self.base_date += str(now.year) + month + day
-        self.base_time += hour + minute
+        self.base_time += base_time_comp(hour + minute)
 
         url = self.End_Point \
               + self.key + '&' \
@@ -104,5 +104,13 @@ class WeatherForecast:
             print('')
         targetXML.close()
         return infolist
+
+def base_time_comp(base_time):
+    time_table = ["0200", "0500", "0800", "1100", "1400", "1700", "2000", "2300"]
+    for i in range(7, 0,-1):
+        if int(base_time) < int(time_table[i]) + 10:
+            base_time = time_table[i-1]
+
+    return base_time
 
 WeatherForecast(55,127).call_weather()
