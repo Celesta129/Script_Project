@@ -100,13 +100,7 @@ class WeatherForecast:
                                          category, fcstTime, fcstValue )
             infolist.append(fcst)
 
-            print(fcst.base_date)
-            print(fcst.base_time)
-            print(fcst.category)
-            print(fcst.fcstValue)
-            print(fcst.fcstTime)
-            print(fcst.nx)
-            print(fcst.ny)
+            fcst.print()
             print('')
         targetXML.close()
         return infolist
