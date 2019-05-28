@@ -82,6 +82,7 @@ class WeatherForecast:
         items = items.find('items')
 
         infolist = []
+        print(url)
         for element in items.findall("item"):
             category = element.find('category').text
             fcstTime = element.find("fcstTime").text
