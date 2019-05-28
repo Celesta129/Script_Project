@@ -16,6 +16,15 @@ class forecastInfo:
         self.fcstTime= fcstTime
         self.fcstValue = fcstValue
 
+    def print(self):
+
+        print(self.base_date);
+        print(self.base_time);
+        print(self.category);
+        print(self.fcstTime);
+        print(self.fcstValue);
+        print(self.nx);
+        print(self.ny);
 
 class WeatherForecast:
     #End_Point
