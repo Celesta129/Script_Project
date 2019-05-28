@@ -6,13 +6,31 @@ from xml.etree import ElementTree
 import urllib
 
 from datetime import datetime
+
+time_table = ["0200", "0500", "0800", "1100", "1400", "1700", "2000", "2300"]
+category_table = { "POP" : "강수확률",
+                   "PTY" : "강수형태",
+                   "R06" : "6시간 강수량",
+                   "S06" : "6시간 신적설",
+                   "REH" : "습도",
+                   "SKY" : "하늘상태",
+                   "T3H" : "3시간 기온",
+                   "TMN" : "아침 최저기온",
+                   "TMX" : "낮 최고기온",
+                   "UUU" : "풍속(동서성분)",
+                   "VVV" : "풍속(남북성분)",
+                   "WAV" : "파고",
+                   "VEC" : "풍향",
+                   "WSD" : "풍속"
+                   }
+
 class forecastInfo:
     def __init__(self,nx, ny, base_date, base_time, category, fcstTime, fcstValue):
         self.nx = nx
         self.ny = ny
         self.base_date = base_date
         self.base_time = base_time
-        self.category = category
+        self.category = category_table[category]
         self.fcstTime= fcstTime
         self.fcstValue = fcstValue
 
@@ -29,6 +47,7 @@ class forecastInfo:
 class WeatherForecast:
     #End_Point
     End_Point = 'http://newsky2.kma.go.kr/service/SecndSrtpdFrcstInfoService2/ForecastSpaceData?'
+
     # 일반 인증키
     key = 'ServiceKey=' + 'sqzrjxFFd5WX3hf5KetFKPC9StDxln3sbsk3V2CzIg2yMKCYAQmrTayFhk78aYuXs2ToJNRSNP%2FweK%2FroyJ%2Fng%3D%3D'
     # 로컬 xml 파일
@@ -69,13 +88,17 @@ class WeatherForecast:
 
         self.base_date += str(now.year) + month + day
         self.base_time += base_time_comp(hour + minute)
-
+        #self.base_date += "20190529"
+        #self.base_time += "0200"
         url = self.End_Point \
               + self.key + '&' \
               + self.base_date + '&' \
               + self.base_time + '&' \
               + self.nx + '&' \
-              + self.ny
+              + self.ny + '&' \
+              + 'numOfRows=' + str(len(category_table) * 8)
+        # Category Table의 길이 = 한 시간에 대한 예보. 따라서 3시간간격 * 8 = 24시간, 지금시간으로부터 1일동안의 예보를 받아온다.
+
         #req = urllib.request.Request(url)
         response = urllib.request.urlopen(url)
         data = response.read()
@@ -93,23 +116,29 @@ class WeatherForecast:
         infolist = []
         print(url)
         for element in items.findall("item"):
+            base_date = element.find('baseDate').text
+            base_time = element.find('baseTime').text
             category = element.find('category').text
             fcstTime = element.find("fcstTime").text
             fcstValue = element.find("fcstValue").text
-            fcst = forecastInfo(self.nx, self.ny, self.base_date, self.base_time,
+            fcst = forecastInfo(self.nx, self.ny, base_date, base_time,
                                          category, fcstTime, fcstValue )
             infolist.append(fcst)
 
             fcst.print()
             print('')
         targetXML.close()
+
+
         return infolist
 
 def base_time_comp(base_time):
-    time_table = ["0200", "0500", "0800", "1100", "1400", "1700", "2000", "2300"]
-    for i in range(7, 0,-1):
-        if int(base_time) < int(time_table[i]) + 10:
+
+    time = int(base_time)
+    for i in range(7, 0, -1):
+        if  time < int(time_table[i]) + 10:
             base_time = time_table[i-1]
+
 
     return base_time
 
