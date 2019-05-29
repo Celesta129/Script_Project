@@ -25,12 +25,15 @@ category_table = { "POP" : "강수확률",
                    }
 
 class forecastInfo:
-    def __init__(self,nx, ny, base_date, base_time, category, fcstTime, fcstValue):
+    def __init__(self,nx, ny, base_date, base_time, category, fcstDate, fcstTime, fcstValue):
         self.nx = nx
         self.ny = ny
         self.base_date = base_date
         self.base_time = base_time
+
         self.category = category_table[category]
+
+        self.fcstDate = fcstDate
         self.fcstTime= fcstTime
         self.fcstValue = fcstValue
 
@@ -39,6 +42,7 @@ class forecastInfo:
         print(self.base_date);
         print(self.base_time);
         print(self.category);
+        print(self.fcstDate)
         print(self.fcstTime);
         print(self.fcstValue);
         print(self.nx);
@@ -116,13 +120,17 @@ class WeatherForecast:
         infolist = []
         print(url)
         for element in items.findall("item"):
+            for i in range(0, 7, 1):
+
+                pass
             base_date = element.find('baseDate').text
             base_time = element.find('baseTime').text
             category = element.find('category').text
+            fcstDate = element.find('fcstDate').text
             fcstTime = element.find("fcstTime").text
             fcstValue = element.find("fcstValue").text
             fcst = forecastInfo(self.nx, self.ny, base_date, base_time,
-                                         category, fcstTime, fcstValue )
+                                         category, fcstDate, fcstTime, fcstValue )
             infolist.append(fcst)
 
             fcst.print()
