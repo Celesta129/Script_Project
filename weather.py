@@ -1,7 +1,7 @@
 from urllib.request import urlopen
 
 import http.client
-
+import copy
 from xml.etree import ElementTree
 import urllib
 
@@ -37,16 +37,11 @@ class forecastInfo:
         self.fcstTime= fcstTime
         self.fcstValue = fcstValue
 
+        self.valuelist = []
     def print(self):
-
-        print(self.base_date);
-        print(self.base_time);
-        print(self.category);
-        print(self.fcstDate)
-        print(self.fcstTime);
-        print(self.fcstValue);
-        print(self.nx);
-        print(self.ny);
+        if len(self.valuelist) != 0:
+            for element in self.valuelist:
+                print(element[0])
 
 class WeatherForecast:
     #End_Point
@@ -101,7 +96,7 @@ class WeatherForecast:
               + self.nx + '&' \
               + self.ny + '&' \
               + 'numOfRows=' + str(len(category_table) * 8)
-        # Category Table의 길이 = 한 시간에 대한 예보. 따라서 3시간간격 * 8 = 24시간, 지금시간으로부터 1일동안의 예보를 받아온다.
+        # Category Table의 길이 = 한 시간에 대한 최대 예보수. 따라서 3시간간격 * 8 = 24시간, 지금시간으로부터 1일동안의 예보를 받아온다.
 
         #req = urllib.request.Request(url)
         response = urllib.request.urlopen(url)
@@ -120,9 +115,7 @@ class WeatherForecast:
         infolist = []
         print(url)
         for element in items.findall("item"):
-            for i in range(0, 7, 1):
 
-                pass
             base_date = element.find('baseDate').text
             base_time = element.find('baseTime').text
             category = element.find('category').text
@@ -137,8 +130,21 @@ class WeatherForecast:
             print('')
         targetXML.close()
 
+        # infolist에 전부 들어있다.
 
-        return infolist
+        index = 0
+        finallist = []
+        for i in range(8):
+            fcst = copy.deepcopy(infolist[index])
+            while fcst.fcstDate == infolist[index].fcstDate and \
+                fcst.fcstTime == infolist[index].fcstTime:
+                dataset = (infolist[index].category,infolist[index].fcstValue)
+                fcst.valuelist.append(dataset)
+                index += 1
+            finallist.append(fcst)
+
+
+        return finallist
 
 def base_time_comp(base_time):
 
