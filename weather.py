@@ -40,8 +40,10 @@ class forecastInfo:
         self.valuelist = []
     def print(self):
         if len(self.valuelist) != 0:
+            print("fcstDate: " + self.fcstDate)
+            print("fcstTime: " + self.fcstTime)
             for element in self.valuelist:
-                print(element[0])
+                print(element[0] + ": " + element[1])
 
 class WeatherForecast:
     #End_Point
@@ -126,8 +128,6 @@ class WeatherForecast:
                                          category, fcstDate, fcstTime, fcstValue )
             infolist.append(fcst)
 
-            fcst.print()
-            print('')
         targetXML.close()
 
         # infolist에 전부 들어있다.
@@ -143,6 +143,9 @@ class WeatherForecast:
                 index += 1
             finallist.append(fcst)
 
+        for element in finallist:
+            element.print()
+            print("")
 
         return finallist
 
