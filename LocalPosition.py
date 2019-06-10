@@ -5,8 +5,8 @@ class cityInfo:
         self.area = area
         self.gu = gu
         self.dong = dong
-        self.x = x
-        self.y = y
+        self.x = int(x)
+        self.y = int(y)
     pass
 
 class namedlist:
