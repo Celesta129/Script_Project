@@ -1,43 +1,130 @@
-import tkinter as tk
+from tkinter import Tk, ttk, Frame, Button, Label, Entry, Text, Checkbutton, \
+    Scale, Listbox, Menu, BOTH, RIGHT, RAISED, N, E, S, W, \
+    HORIZONTAL, END, FALSE, IntVar, StringVar,font, messagebox as box
+
 import weather
+import LocalPosition
 
-HEIGHT = 500
-WIDTH = 600
+class Example(Frame):
+    def __init__(self,parent):
+        chosenFont = font.Font(family='Verdana', size=10, weight='normal')
+        Frame.__init__(self,parent,background="white")
+        self.parent = parent
+        self.parent.title("Weather Application")
+        self.style = ttk.Style()
+        self.style.theme_use("default")
+        self.centreWindow()
+        self.pack(fill=BOTH,expand=1)
 
-def test_function(entry):
-    print("This is the entry:", entry)
+        # 라벨 표시와 입력
+        firstNameLabel = Label(self, text="First Name", font=chosenFont) # 폰트설정
+        firstNameLabel.grid(row=0, column=0, sticky=W + E)
+        lastNameLabel = Label(self, text="Last Name")
+        lastNameLabel.grid(row=1, column=0, sticky=W + E)
+        countryLabel = Label(self, text="Country")
+        countryLabel.grid(row=2, column=0, sticky=W + E)
+        addressLabel = Label(self, text="Address")
+        addressLabel.grid(row=3, column=0, pady=10, sticky=W + E + N)
 
-root = tk.Tk()
+        firstNameText = Entry(self, width=20)
+        firstNameText.grid(row=0, column=1, padx=5, pady=5, ipady=2, sticky=W + E)
+        lastNameText = Entry(self, width=20)
+        lastNameText.grid(row=1, column=1, padx=5, pady=5, ipady=2, sticky=W + E)
+        addressText = Text(self, padx=5, pady=5, width=20, height=6)
+        addressText.grid(row=3, column=1, padx=5, pady=5, sticky=W)
 
-canvas = tk.Canvas(root, height=HEIGHT, width=WIDTH)
-canvas.pack()
 
-background_image = tk.PhotoImage(file='background.png')
-background_label = tk.Label(root, image=background_image)
-background_label.place(relwidth=1, relheight=1)
+        # 내가 필요한 클릭 스크롤바
+        self.countryVar = StringVar()
+        self.countryCombo = ttk.Combobox(self, textvariable=self.countryVar)
+        #####################
+        #####################
+        ##################### 
+        #self.countryCombo['values'] = ('United States', 'United Kingdom', 'France')
+        self.countryCombo['values'] = LocalPosition.localPosition.AreaList  # 이부분
+        self.countryCombo.current(1)
+        self.countryCombo.bind("<<ComboboxSelected>>", self.newCountry)
+        self.countryCombo.grid(row=2, column=1, padx=5, pady=5, ipady=2, sticky=W)
 
-frame = tk.Frame(root, bg='#80c1ff', bd=5) #89c1ff <- 하늘색 색상
-frame.place(relx=0.5, rely=0.1, relwidth=0.75, relheight=0.1, anchor='n')
+        # 좌우 스크롤로 값 변경
+        self.salaryVar = StringVar()
+        salaryLabel = Label(self, text="Salary:",textvariable=self.salaryVar)
+        salaryLabel.grid(row=0, column=2,columnspan=2, sticky=W+E)
+        salaryScale = Scale(self, from_=0,to=1, orient=HORIZONTAL,
+                            resolution=1,command=self.onSalaryScale)
+        salaryScale.grid(row=1, column=2,columnspan=1, sticky=W+E)
 
-entryX = tk.Entry(frame, bg='pink')
-entryX.grid(row=30, column=1)
+        # 체크박스 기능
+        self.fullTimeVar = IntVar()
+        fullTimeCheck = Checkbutton(self, text="Full-time?",
+                                    variable=self.fullTimeVar, command=self.fullChecked)
+        fullTimeCheck.grid(row=2, column=2, columnspan=2, sticky=W + E)
 
-entryY = tk.Entry(frame, bg='pink')
-entryY.grid(row=50, column=1)
+        # -
+        self.titleVar = StringVar()
+        self.titleVar.set("TBA")
+        Label(self, textvariable=self.titleVar).grid(
+            row=4, column=1, sticky=W + E
+        )  # a reference to the label is not retained
 
-button = tk.Button(frame, text="Input", bg='white', font=40, command=lambda:test_function(entryX.get()))
-button.place(relx=0.7, relheight=1, relwidth=0.3)
+        title = ['Programmer', 'Developer', 'Web Developer', 'Designer']
+        titleList = Listbox(self, height=5)
+        for t in title:
+            titleList.insert(END, t)
+        titleList.grid(row=3, column=2, columnspan=2, pady=5, sticky=N + E + S + W)
+        titleList.bind("<<ListboxSelect>>", self.newTitle)
 
-labelX = tk.Label(frame, text="X 좌표", bg='yellow')
-labelX.grid(row=30, column=0)
+        # 버튼
+        okBtn = Button(self, text="OK", width=10, command=self.onConfirm)
+        okBtn.grid(row=4, column=2, padx=5, pady=3, sticky=W + E)
+        closeBtn = Button(self, text="Close", width=10, command=self.onExit)
+        closeBtn.grid(row=4, column=3, padx=5, pady=3, sticky=W + E)
 
-labelY = tk.Label(frame, text="Y 좌표", bg='yellow')
-labelY.grid(row=50, column=0)
+    # 프로그램창 항상 중앙에 띄우기
+    def centreWindow(self):
+        w = 500
+        h = 300
+        sw = self.parent.winfo_screenwidth()
+        sh = self.parent.winfo_screenheight()
+        x = (sw - w)/2
+        y = (sh - h)/2
+        self.parent.geometry('%dx%d+%d+%d'%(w,h,x,y))
 
-lower_frame = tk.Frame(root, bg='#80c1ff', bd=10)
-lower_frame.place(relx=0.5, rely=0.25, relwidth=0.75, relheight=0.6, anchor='n')
+    # 내가 필요한 클릭 스크롤바
+    def newCountry(self, event):
+        print(self.countryVar.get())
 
-labelM = tk.Label(lower_frame)
-labelM.place(relwidth=1, relheight=1)
+    # 좌우 스크롤로 값 변경
+    def onSalaryScale(self, val):
+        self.salaryVar.set("Salary: " + str(val))
 
-root.mainloop()
+    # 체크박스 기능
+    def fullChecked(self):
+        if self.fullTimeVar.get() == 1:
+            self.parent.title("Simple Window (full-time)")
+        else:
+            self.parent.title("Simple Window")
+
+    # -
+    def newTitle(self, val):
+        sender = val.widget
+        idx = sender.curselection()
+        value = sender.get(idx)
+        self.titleVar.set(value)
+
+    # 버튼 클릭시 메세지 박스
+    def onConfirm(self):
+        box.showinfo("Information", "Thank you!")
+    def onExit(self):
+        self.quit()
+
+def main():
+    root = Tk()
+    root.resizable(width=FALSE,height=FALSE)
+    app = Example(root)
+
+    root.mainloop()
+
+
+if __name__ == '__main__':
+    main()
