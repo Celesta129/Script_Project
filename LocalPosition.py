@@ -72,8 +72,10 @@ class localPosition:
         for area in self.AreaList:
             for gu in area.list:
                 for dong in gu.list:
-                    print(area.text + " " + gu.text + " " + dong.name +" " + dong.x + " " +dong.y)
+                    print(area.text + " " + gu.text + " " + dong.name +" " + str(dong.x) + " " + str(dong.y))
         return self.AreaList
     pass
 
-#localPosition().call_PosInfo()
+
+templist = localPosition().call_PosInfo()
+a = 1
