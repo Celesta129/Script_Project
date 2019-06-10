@@ -76,4 +76,4 @@ class localPosition:
         return self.AreaList
     pass
 
-localPosition().call_PosInfo()
+#localPosition().call_PosInfo()
